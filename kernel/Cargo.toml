@@ -1,0 +1,96 @@
+[package]
+name = "rcore"
+version = "0.2.0"
+edition = "2018"
+authors = [
+    "WangRunji <wangrunji0408@163.com>",
+    "Ben Pig Chu <benpichu@gmail.com>",
+    "dzy <daizy15@mails.tsinghua.edu.cn>",
+    "equation314 <equation618@gmail.com>",
+    "cfgbd <cfgbdv@163.com>",
+    "koumingyang <1761674434@qq.com>",
+    "lcy1996 <992195697@qq.com>",
+    "chenqiuhao <haohao0924@126.com>",
+    "maoyuchaxue <wangjt15@mails.tsinghua.edu.cn>",
+    "Jiajie Chen <jiegec@qq.com>",
+    "chyyuu <yuchen@mail.tsinghua.edu.cn>",
+    "Shengqi Chen <harry-chen@outlok.com>",
+    "Yuhao Zhou <miskcoo@gmail.com>"
+]
+
+[features]
+default = []
+board_u540 = ["link_user"]
+board_k210 = ["link_user"]
+board_rocket_chip = ["link_user"]
+# (for aarch64 RaspberryPi3)
+nographic = []
+consolegraphic = []
+board_raspi3 = ["bcm2837", "link_user"]
+# for qemu machine
+board_malta = ["link_user"]
+board_mipssim = ["link_user"]
+# for thinpad
+board_thinpad = ["link_user"]
+# for x86 PC
+board_pc = ["link_user"]
+# Hard link user program
+link_user = []
+# Run cmdline instead of user shell, useful for automatic testing
+run_cmdline = []
+# Add performance profiling
+profile = []
+
+[profile.dev]
+# MUST >= 2 : Enable RVO to avoid stack overflow
+opt-level = 2
+
+[dependencies]
+log = "0.4"
+spin = "0.5"
+xmas-elf = "0.7"
+bitflags = "1.1"
+bit_field = "0.10"
+volatile = "0.2"
+bitvec = { version = "0.14", default-features = false, features = ["alloc"] }
+buddy_system_allocator = "0.3"
+pci = { git = "https://github.com/rcore-os/pci-rs" }
+device_tree = { git = "https://github.com/rcore-os/device_tree-rs" }
+isomorphic_drivers = { git = "https://github.com/rcore-os/isomorphic_drivers", features = ["log"] }
+lazy_static = { version = "1.4", features = ["spin_no_std"] }
+smoltcp = { git = "https://github.com/rcore-os/smoltcp", default-features = false, features = ["alloc", "log", "proto-ipv4", "proto-igmp", "socket-icmp", "socket-udp", "socket-tcp", "socket-raw"] }
+bitmap-allocator = { git = "https://github.com/rcore-os/bitmap-allocator" }
+rcore-console = { git = "https://github.com/rcore-os/rcore-console", rev = "b7bacf9", default-features = false }
+rcore-memory = { path = "../crate/memory" }
+rcore-thread = { git = "https://github.com/rcore-os/rcore-thread", rev = "95e716a2" }
+rcore-fs = { git = "https://github.com/rcore-os/rcore-fs", rev = "33f86c47" }
+rcore-fs-sfs = { git = "https://github.com/rcore-os/rcore-fs", rev = "33f86c47" }
+rcore-fs-ramfs = { git = "https://github.com/rcore-os/rcore-fs", rev = "33f86c47" }
+rcore-fs-mountfs = { git = "https://github.com/rcore-os/rcore-fs", rev = "33f86c47" }
+rcore-fs-devfs = { git = "https://github.com/rcore-os/rcore-fs", rev = "33f86c47" }
+compression = { version = "0.1.4", default-features = false, features = ["gzip"] }
+
+
+[target.'cfg(target_arch = "x86_64")'.dependencies]
+rboot = { path = "../rboot" }
+apic = { git = "https://github.com/rcore-os/apic-rs" }
+x86_64 = "0.7"
+raw-cpuid = "7.0"
+uart_16550 = "0.2"
+pc-keyboard = "0.5"
+acpi = "0.4"
+aml = "0.4"
+
+[target.'cfg(any(target_arch = "riscv32", target_arch = "riscv64"))'.dependencies]
+riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] }
+
+[target.'cfg(target_arch = "aarch64")'.dependencies]
+aarch64 = { git = "https://github.com/rcore-os/aarch64", version = "3.0.0" }
+bcm2837 = { git = "https://github.com/rcore-os/bcm2837", version = "2.5.1", optional = true }
+
+[target.'cfg(target_arch = "mips")'.dependencies]
+mips = "^0.2.0"
+paste = "0.1"
+
+[build-dependencies]
+cc = "1.0"
