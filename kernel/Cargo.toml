@@ -75,7 +75,7 @@ compression = { version = "0.1.4", default-features = false, features = ["gzip"]
 rboot = { path = "../rboot" }
 apic = { git = "https://github.com/rcore-os/apic-rs" }
 x86_64 = "0.7"
-raw-cpuid = "7.0"
+raw-cpuid = "11.0"
 uart_16550 = "0.2"
 pc-keyboard = "0.5"
 acpi = "0.4"
